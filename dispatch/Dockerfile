@@ -1,12 +1,12 @@
 # Use the latest Go version
-FROM golang:1.18 AS builder
+FROM golang:1.23.2 AS builder
 
 WORKDIR /go/src/app
 
 # Copy the Go files
-COPY *.go . 
+COPY *.go .
 
-# Initialize module and download dependencies
+# Initialize module and tidy dependencies
 RUN go mod init dispatch && go mod tidy
 
 # Build the application
