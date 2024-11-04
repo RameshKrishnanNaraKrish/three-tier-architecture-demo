@@ -1,10 +1,24 @@
-FROM golang:1.17
+# Use the latest Go version
+FROM golang:1.18 AS builder
 
 WORKDIR /go/src/app
 
-COPY *.go .
+# Copy the Go files
+COPY *.go . 
 
-RUN go mod init dispatch && go get
-RUN go install
+# Initialize module and download dependencies
+RUN go mod init dispatch && go mod tidy
 
+# Build the application
+RUN go build -o dispatch .
+
+# Final stage
+FROM alpine:latest
+
+WORKDIR /root/
+
+# Copy the binary from the builder stage
+COPY --from=builder /go/src/app/dispatch .
+
+# Command to run the binary
 CMD ["./dispatch"]
